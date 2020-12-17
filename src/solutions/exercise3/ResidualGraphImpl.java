@@ -90,6 +90,7 @@ public class ResidualGraphImpl<V> implements ResidualGraph<V>, ExerciseSubmissio
      * @throws java.util.NoSuchElementException - if node does not exist.
      */
 
+    @Override
     public List<ResidualEdge<V>> edgesFrom(V node) {
         if (!map.containsKey(node)) {
             throw new NoSuchElementException("The node does not exist in the graph!");
@@ -104,6 +105,7 @@ public class ResidualGraphImpl<V> implements ResidualGraph<V>, ExerciseSubmissio
      * @return List of all residual edges
      */
 
+    @Override
     public List<ResidualEdge<V>> getEdges() {
         List<ResidualEdge<V>> listOfResidualEdges = new ArrayList<>();
         if (map.size() > 0) {   // test if the map empty
@@ -128,6 +130,7 @@ public class ResidualGraphImpl<V> implements ResidualGraph<V>, ExerciseSubmissio
      *
      */
 
+    @Override
     public ResidualEdge<V> getEdge(V startNode, V endNode) {
         if ((startNode == null) || (endNode == null)) {
             throw new IllegalArgumentException("The start node and the end node should not be null");
@@ -151,6 +154,7 @@ public class ResidualGraphImpl<V> implements ResidualGraph<V>, ExerciseSubmissio
      * @return Set off all nodes.
      */
 
+    @Override
     public Set<V> getNodes() {
         return map.keySet();
 

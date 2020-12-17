@@ -1,6 +1,7 @@
 package solutions.exercise3;
 
 //import org.sopra.api.exercises.ExerciseSubmission;
+
 import org.sopra.api.exercises.exercise3.FlowEdge;
 
 
@@ -12,7 +13,7 @@ import org.sopra.api.exercises.exercise3.FlowEdge;
  * @since 01-12-2020
  */
 
-public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
+public class FlowEdgeImpl<V> extends Edge<V> implements FlowEdge<V> {
 
 
     private int flow; // the flow of the edge
@@ -44,7 +45,8 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
      * @return flow across this edge
      */
 
-    public int getFlow () {
+    @Override
+    public int getFlow() {
         return this.flow;
     }
 
@@ -52,7 +54,7 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
     /**
      * Sets the flow across this edge.
      *
-     * @param  flow new flow across this edge.
+     * @param flow new flow across this edge.
      * @throws java.lang.IllegalArgumentException -  if value is negative
      */
 
@@ -67,14 +69,14 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
 
     }
 
-/*
+    /*
 
-    */
+     */
 /**
-     * Gets the start node of this edge.
-     *
-     * @return the start node of this edge
-     *//*
+ * Gets the start node of this edge.
+ *
+ * @return the start node of this edge
+ *//*
 
 
 
@@ -86,10 +88,10 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
 
     */
 /**
-     * Gets the end node of this edge.
-     *
-     * @return the end node of this edge
-     *//*
+ * Gets the end node of this edge.
+ *
+ * @return the end node of this edge
+ *//*
 
 
     @Override
@@ -100,10 +102,10 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
 
     */
 /**
-     * Gets the weight of this edge. Most likely, this weight will be a powerline's capacity.
-     *
-     * @return the capacity of this edge (edge's weight)
-     *//*
+ * Gets the weight of this edge. Most likely, this weight will be a powerline's capacity.
+ *
+ * @return the capacity of this edge (edge's weight)
+ *//*
 
 
     @Override
@@ -114,11 +116,11 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
 
     */
 /**
-     * Sets the weight of this edge.
-     *
-     * @param capacity of this edge (edge's weight)
-     * @throws java.lang.IllegalArgumentException -  if value is negative
-     *//*
+ * Sets the weight of this edge.
+ *
+ * @param capacity of this edge (edge's weight)
+ * @throws java.lang.IllegalArgumentException -  if value is negative
+ *//*
 
 
     @Override

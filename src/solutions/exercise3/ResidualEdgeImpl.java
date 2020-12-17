@@ -45,6 +45,7 @@ public class ResidualEdgeImpl<V> extends Edge<V> implements ResidualEdge<V> {
      * @throws java.lang.IllegalArgumentException if the amount of flow added or removed from this edge exceeds the capacity of this edge
      */
 
+    @Override
     public void addFlow(int amount) {
         if (amount > capacity) {
             throw new IllegalArgumentException("the amount flow should not exceed the capacity value !!");
@@ -68,6 +69,7 @@ public class ResidualEdgeImpl<V> extends Edge<V> implements ResidualEdge<V> {
      * @return Reverse residual edge.
      */
 
+    @Override
     public ResidualEdge<V> getReverse() {
         return reverse;
     }
@@ -79,6 +81,7 @@ public class ResidualEdgeImpl<V> extends Edge<V> implements ResidualEdge<V> {
      * @param reverse Reverse residual edge associated with this edge.
      */
 
+    @Override
     public void setReverse(ResidualEdge<V> reverse) {
         this.reverse = reverse;
     }
