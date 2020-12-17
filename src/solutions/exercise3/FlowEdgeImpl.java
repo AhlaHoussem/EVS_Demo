@@ -18,7 +18,6 @@ public class FlowEdgeImpl <V> extends Edge <V> implements FlowEdge <V> {
     private int flow; // the flow of the edge
 
 
-
     /**
      * The constructor initialises the flow across an edge and initialise the given paramaters.
      *
