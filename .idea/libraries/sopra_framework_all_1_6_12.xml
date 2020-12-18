@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="sopra_framework-all-1.6.12">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sopra_framework-1.6.18.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/sopra_framework-all-1.6.10-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/sopra_framework-1.6.18.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
