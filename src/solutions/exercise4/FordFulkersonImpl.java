@@ -21,36 +21,34 @@ import java.util.*;
 public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmission {
 
 
-
-
-
-
     /**
      * Computes the maximum flow in a flow network from start to target.
-     *
+     * <p>
      * Given a flow network and a pair of nodes start & target,
      * the algorithm calculates a maximum flow from start to target in given network.
      *
      * @param graph  Flow graph representing the flow network. Flows along edges in this graph will be set to max flows
      * @param start  Source node
      * @param target Sink node
-     * @throws java.lang.IllegalArgumentException  If any parameter is null
-     * @throws java.util.NoSuchElementException  If start or target are not nodes in the graph
+     * @throws java.lang.IllegalArgumentException If any parameter is null
+     * @throws java.util.NoSuchElementException   If start or target are not nodes in the graph
      */
 
     @Override
     public void findMaxFlow(FlowGraph<V> graph, V start, V target) {
-        if ( graph == null || start == null || target == null ) {
+        if (graph == null || start == null || target == null) {
             throw new IllegalArgumentException("The parameters should not be null!");
         }
         if (!graph.containsNode(start) || !graph.containsNode(target)) {
             throw new NoSuchElementException("The start/target node does not exist in the graph");
         }
 
+        if (start.equals(target)) {
+            throw new IllegalArgumentException("A path to the same starting node is not possible");
+        }
 
 
     }
-
 
 
     /**
@@ -60,54 +58,67 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
      * The edges are ordered depending on their occurrence in the path starting with an edge to end as first entry, and therefore ending with an edges from start as last entry.
      * If no path with remaining capacity along the edges exists null is returned.
      *
-     *
      * @param start Start node of the path
      * @param end   End node of the path
      * @param graph Residual graph to search in
      * @return Path (represented by a double ended queue) from the graph with ordering depending on occurrence in the path,
      * or null if path with remaining capacity does not exist.
-     * @throws java.lang.IllegalArgumentException  If at least one of the parameters is null
+     * @throws java.lang.IllegalArgumentException If at least one of the parameters is null
      */
 
     @Override
     public Deque<ResidualEdge<V>> findPath(V start, V end, ResidualGraph<V> graph) {
-        if ( start == null ||  end == null || graph == null  ) {
+        if (start == null || end == null || graph == null) {
             throw new IllegalArgumentException("The parameters should not be null!");
         }
 
-        //BFS
+        if (start.equals(end)) {
+            throw new IllegalArgumentException("A path to the same starting node is not possible");
+        }
+        if (!graph.getNodes().contains(start) || !graph.getNodes().contains(end)) {
+            throw new NoSuchElementException("The start/target node does not exist in the graph");
+        }
 
-        
+
+        // Breadth-First-Search (BFS)
+
+
         Set<V> seen = new HashSet<>();     // Set of the explored nodes
         Queue<V> queue = new LinkedList<>();
-
         Map<V, V> tree = new HashMap<>();
         boolean foundTheTail = false;
+
 
         queue.add(start);
         seen.add(start);
 
         while (!queue.isEmpty()) {
-           V currentNode = queue.poll(); // node S
+            V currentNode = queue.poll(); // node S
 
-            for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) { // U,V : the other node which can be reached from S
-                if (!seen.contains(res_edge.getEnd()) && res_edge.getCapacity() > 0 ) {
-                    seen.add(res_edge.getEnd()); // adding the node to the seen list
-                    System.out.println(res_edge.getEnd());
-                    tree.put(res_edge.getEnd(), res_edge.getStart()); // adding the node to the availability tree
+            for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) {  // the edge leaving the current node( the possible other nodes)
+                if (!seen.contains(res_edge.getEnd()) ) {
+
+                    seen.add(res_edge.getEnd());                          // adding the node to the seen list
+                    queue.add(res_edge.getEnd());                         // adding the node to the queue
+                    tree.put(res_edge.getEnd(), res_edge.getStart());     // adding the node to the availability tree
+                  //  System.out.println(res_edge.getEnd());
+
                 }
                 if (res_edge.getEnd().equals(end)) {
-                   // foundTheTail = true;
-                    break;
+                    foundTheTail = true;
                 }
             }
         }
 
-        List<ResidualEdge<V>> residualEdges = graph.getEdges(); // list of all residual edges
 
+        List<ResidualEdge<V>> residualEdges = graph.getEdges(); // list of all residual edges
         Deque<ResidualEdge<V>> path = new ArrayDeque<>();
 
-        if (tree.containsKey(end)) {
+        if (foundTheTail) { // the target node exist in the tree
+
+            V node = tree.get(end); // getting the last node before reaching the target
+
+            path.addLast(graph.getEdge(node, end));
 
 
             return path;
@@ -117,13 +128,11 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
     }
 
 
-
-
     /**
      * Finds the minimum capacity along the given path and adds the minimum capacity to flow of each edges of the path.
      *
-     * @param path  - Augmented path (represented by a double ended queue) where minimum capacity of path is added to flow
-     * @throws java.lang.IllegalArgumentException  if parameter is null
+     * @param path - Augmented path (represented by a double ended queue) where minimum capacity of path is added to flow
+     * @throws java.lang.IllegalArgumentException if parameter is null
      */
 
     @Override
@@ -134,12 +143,12 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         int mini = path.element().getCapacity(); //  choosing the capacity of a random edge
 
-        for ( ResidualEdge<V> res_edge: path) {
-            if ( res_edge.getCapacity() < mini) {
+        for (ResidualEdge<V> res_edge : path) {
+            if (res_edge.getCapacity() < mini) {
                 mini = res_edge.getCapacity();
             }
         }
-        for ( ResidualEdge<V> res_edge: path) {
+        for (ResidualEdge<V> res_edge : path) {
             res_edge.addFlow(mini);
         }
 
