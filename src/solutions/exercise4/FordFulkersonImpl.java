@@ -6,8 +6,7 @@ import org.sopra.api.exercises.exercise3.ResidualEdge;
 import org.sopra.api.exercises.exercise3.ResidualGraph;
 import org.sopra.api.exercises.exercise4.FordFulkerson;
 
-import java.util.Deque;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 /**
@@ -72,7 +71,49 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
     @Override
     public Deque<ResidualEdge<V>> findPath(V start, V end, ResidualGraph<V> graph) {
-        return null;
+        if ( start == null ||  end == null || graph == null  ) {
+            throw new IllegalArgumentException("The parameters should not be null!");
+        }
+
+        //BFS
+
+        
+        Set<V> seen = new HashSet<>();     // Set of the explored nodes
+        Queue<V> queue = new LinkedList<>();
+
+        Map<V, V> tree = new HashMap<>();
+        boolean foundTheTail = false;
+
+        queue.add(start);
+        seen.add(start);
+
+        while (!queue.isEmpty()) {
+           V currentNode = queue.poll(); // node S
+
+            for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) { // U,V : the other node which can be reached from S
+                if (!seen.contains(res_edge.getEnd()) && res_edge.getCapacity() > 0 ) {
+                    seen.add(res_edge.getEnd()); // adding the node to the seen list
+                    System.out.println(res_edge.getEnd());
+                    tree.put(res_edge.getEnd(), res_edge.getStart()); // adding the node to the availability tree
+                }
+                if (res_edge.getEnd().equals(end)) {
+                   // foundTheTail = true;
+                    break;
+                }
+            }
+        }
+
+        List<ResidualEdge<V>> residualEdges = graph.getEdges(); // list of all residual edges
+
+        Deque<ResidualEdge<V>> path = new ArrayDeque<>();
+
+        if (tree.containsKey(end)) {
+
+
+            return path;
+        } else {
+            return null;
+        }
     }
 
 
@@ -93,13 +134,13 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         int mini = path.element().getCapacity(); //  choosing the capacity of a random edge
 
-        for ( ResidualEdge<V> edge: path) {
-            if ( edge.getCapacity() < mini) {
-                mini = edge.getCapacity();
+        for ( ResidualEdge<V> res_edge: path) {
+            if ( res_edge.getCapacity() < mini) {
+                mini = res_edge.getCapacity();
             }
         }
-        for ( ResidualEdge<V> edge: path) {
-            edge.addFlow(mini);
+        for ( ResidualEdge<V> res_edge: path) {
+            res_edge.addFlow(mini);
         }
 
     }
