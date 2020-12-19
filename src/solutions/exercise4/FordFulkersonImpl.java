@@ -84,8 +84,9 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
 
         Set<V> seen = new HashSet<>();     // Set of the explored nodes
-        Queue<V> queue = new LinkedList<>();
-        Map<V, V> tree = new HashMap<>();
+        Deque<V> queue = new LinkedList<>();
+
+        Map<V, V> nodesTree = new HashMap<>();
         boolean foundTheTail = false;
 
 
@@ -100,7 +101,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
                     seen.add(res_edge.getEnd());                          // adding the node to the seen list
                     queue.add(res_edge.getEnd());                         // adding the node to the queue
-                    tree.put(res_edge.getEnd(), res_edge.getStart());     // adding the node to the availability tree
+                    nodesTree.put(res_edge.getEnd(), res_edge.getStart());     // adding the node to the availability tree
                   //  System.out.println(res_edge.getEnd());
 
                 }
@@ -115,40 +116,46 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         if (foundTheTail) { // the target node exist in the tree
 
-            V node = tree.get(end); // getting the last node before reaching the target
+            V node = nodesTree.get(end); // getting the last node before reaching the target
 
             path.addLast(graph.getEdge(node, end));
 
             boolean foundThePath = false;
-            while (!start.equals(tree.get(node))) {
+            while (!start.equals(nodesTree.get(node))) {
                 for (ResidualEdge<V> res_edge : graph.getEdges()) {
-                    ResidualEdge<V> wantedEdge = graph.getEdge(tree.get(node), node);
+                    ResidualEdge<V> wantedEdge = graph.getEdge(nodesTree.get(node), node);
                     if (res_edge.equals(wantedEdge)) {
                         path.addLast(wantedEdge);
-                      /*  if (start.equals(tree.get(node))) {
+                      /*  if (start.equals(nodesTree.get(node))) {
                             foundThePath = true;
                         }*/
                     }
                 }
-                node = tree.get(node);
+                node = nodesTree.get(node);
             }
-            path.addLast(graph.getEdge(tree.get(node), node));
-            reverseQueue(path);
+            path.addLast(graph.getEdge(nodesTree.get(node), node));
+           // reverseQueue(path);
             return path;
         } else {
             return null;
         }
     }
 
+    /**
+     * Reverses the order of a deque.
+     * @param path The path if the Residual edges
+     */
+
     private void reverseQueue (Deque<ResidualEdge<V>> path) {
 
+        if (path.isEmpty()) return;
         Stack<ResidualEdge<V>> stack = new Stack<>();
         while (!path.isEmpty()) {
             stack.push(path.getFirst());
             path.pop();
         }
         while (!stack.isEmpty()) {
-            path.push(stack.lastElement());
+            path.addLast(stack.lastElement());
             stack.pop();
         }
 
