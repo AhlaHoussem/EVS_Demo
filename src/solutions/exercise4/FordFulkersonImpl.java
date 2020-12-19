@@ -1,5 +1,6 @@
 package solutions.exercise4;
 
+import com.google.gson.internal.LinkedHashTreeMap;
 import org.sopra.api.exercises.ExerciseSubmission;
 import org.sopra.api.exercises.exercise3.FlowGraph;
 import org.sopra.api.exercises.exercise3.ResidualEdge;
@@ -82,11 +83,9 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         // Breadth-First-Search (BFS)
 
-
-        Set<V> seen = new HashSet<>();     // Set of the explored nodes
-        Deque<V> queue = new LinkedList<>();
-
-        Map<V, V> nodesTree = new HashMap<>();
+        Deque<V> queue = new LinkedList<>();      // Set the queue
+        Set<V> seen = new HashSet<>();            // Set of the explored nodes
+        Map<V, V> nodesTree = new HashMap<>();    // Set the availability tree
         boolean foundTheTail = false;
 
 
@@ -97,12 +96,12 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             V currentNode = queue.poll(); // node S
 
             for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) {  // the edge leaving the current node( the possible other nodes)
-                if (!seen.contains(res_edge.getEnd()) ) {
+                if (!seen.contains(res_edge.getEnd())) {
 
-                    seen.add(res_edge.getEnd());                          // adding the node to the seen list
-                    queue.add(res_edge.getEnd());                         // adding the node to the queue
+                    seen.add(res_edge.getEnd());                               // adding the node to the seen list
+                    queue.add(res_edge.getEnd());                              // adding the node to the queue
                     nodesTree.put(res_edge.getEnd(), res_edge.getStart());     // adding the node to the availability tree
-                  //  System.out.println(res_edge.getEnd());
+                    //  System.out.println(res_edge.getEnd());
 
                 }
                 if (res_edge.getEnd().equals(end)) {
@@ -114,27 +113,30 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         Deque<ResidualEdge<V>> path = new ArrayDeque<>();
 
-        if (foundTheTail) { // the target node exist in the tree
+        if (foundTheTail) {                 // the target node exist in the tree
 
-            V node = nodesTree.get(end); // getting the last node before reaching the target
+            V node = nodesTree.get(end);    // getting the last node before reaching the target
 
-            path.addLast(graph.getEdge(node, end));
+            path.addFirst(graph.getEdge(node, end));
 
-            boolean foundThePath = false;
             while (!start.equals(nodesTree.get(node))) {
                 for (ResidualEdge<V> res_edge : graph.getEdges()) {
                     ResidualEdge<V> wantedEdge = graph.getEdge(nodesTree.get(node), node);
                     if (res_edge.equals(wantedEdge)) {
-                        path.addLast(wantedEdge);
-                      /*  if (start.equals(nodesTree.get(node))) {
-                            foundThePath = true;
-                        }*/
+                        path.addFirst(wantedEdge);
                     }
                 }
                 node = nodesTree.get(node);
+
+                /*   s->a, a->d, d->t; logical
+                /*   a->s, d->a, t->d; applicable
+                *
+                *    d->t, a->d, s->a
+                *    t->d, d->a, a->s; applicable              *
+                * */
             }
             path.addLast(graph.getEdge(nodesTree.get(node), node));
-           // reverseQueue(path);
+            reverseQueue(path);
             return path;
         } else {
             return null;
@@ -148,6 +150,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
     private void reverseQueue (Deque<ResidualEdge<V>> path) {
 
+        //assuming the path is not null
         if (path.isEmpty()) return;
         Stack<ResidualEdge<V>> stack = new Stack<>();
         while (!path.isEmpty()) {
@@ -158,6 +161,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             path.addLast(stack.lastElement());
             stack.pop();
         }
+
 
     }
 
