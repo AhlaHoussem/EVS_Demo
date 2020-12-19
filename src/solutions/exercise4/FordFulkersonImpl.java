@@ -111,7 +111,6 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
         }
 
 
-        List<ResidualEdge<V>> residualEdges = graph.getEdges(); // list of all residual edges
         Deque<ResidualEdge<V>> path = new ArrayDeque<>();
 
         if (foundTheTail) { // the target node exist in the tree
@@ -120,13 +119,40 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
             path.addLast(graph.getEdge(node, end));
 
-
+            boolean foundThePath = false;
+            while (!start.equals(tree.get(node))) {
+                for (ResidualEdge<V> res_edge : graph.getEdges()) {
+                    ResidualEdge<V> wantedEdge = graph.getEdge(tree.get(node), node);
+                    if (res_edge.equals(wantedEdge)) {
+                        path.addLast(wantedEdge);
+                      /*  if (start.equals(tree.get(node))) {
+                            foundThePath = true;
+                        }*/
+                    }
+                }
+                node = tree.get(node);
+            }
+            path.addLast(graph.getEdge(tree.get(node), node));
+            reverseQueue(path);
             return path;
         } else {
             return null;
         }
     }
 
+    private void reverseQueue (Deque<ResidualEdge<V>> path) {
+
+        Stack<ResidualEdge<V>> stack = new Stack<>();
+        while (!path.isEmpty()) {
+            stack.push(path.getFirst());
+            path.pop();
+        }
+        while (!stack.isEmpty()) {
+            path.push(stack.lastElement());
+            stack.pop();
+        }
+
+    }
 
     /**
      * Finds the minimum capacity along the given path and adds the minimum capacity to flow of each edges of the path.
