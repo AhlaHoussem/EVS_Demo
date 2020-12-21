@@ -58,8 +58,37 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
         ResidualGraph<V> residualGraph = new ResidualGraphImpl<V>(graph);
         Deque<ResidualEdge<V>> path = findPath(start, target, residualGraph);
         int MaxFlow = 0;
+        while (path != null) {
+            MaxFlow += findMiniCapacity(path);
+            augmentPath(path);
+            path = findPath(start, target, residualGraph);
+
+        }
+
+    }
 
 
+    /**
+     * Gets the smallest remaining capacity in a path
+     *
+     * @param path The path of residual edges
+     * @return the smallest remaining capacity in a path
+     */
+    private int findMiniCapacity(Deque<ResidualEdge<V>> path) {
+        // in this case path will never be null
+
+        if (path == null) {
+            throw new IllegalArgumentException("The path should not be null! ");
+        }
+
+        int mini = path.element().getCapacity() ; //  choosing the capacity of a random edge
+
+        for (ResidualEdge<V> res_edge : path) {
+            if (res_edge.getCapacity() < mini) {
+                mini = res_edge.getCapacity();
+            }
+        }
+        return mini;
     }
 
 
@@ -108,7 +137,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
         seen.add(start);
 
         while (!queue.isEmpty()) {
-            V currentNode = queue.poll(); // node S
+            V currentNode = queue.poll(); // node in zero position
 
             for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) {  // the edge leaving the current node( the possible other nodes)
                 if (!seen.contains(res_edge.getEnd()) && res_edge.getCapacity() > 0) {
@@ -128,14 +157,10 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         Deque<ResidualEdge<V>> path = new ArrayDeque<>();
 
-        if (foundTheTail && nodesTree.get(end) != null) {                 // the target node exist in the tree
+        if (foundTheTail && nodesTree.get(end) != null) {        // the target node exist in the tree
 
             V node = nodesTree.get(end);    // getting the last node before reaching the target
-            if (node == null) {
-                throw new IllegalArgumentException("fddf");
-            }
             path.addFirst(graph.getEdge(node, end));
-
 
             while (!start.equals(nodesTree.get(node))) {
                 for (ResidualEdge<V> res_edge : graph.getEdges()) {
@@ -153,9 +178,10 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
                   3) a->s, d->a, t->d;  other possibilities
                   4) d->t, a->d, s->a;
                 */
+
             }
             path.addLast(graph.getEdge(nodesTree.get(node), node));
-           // reverseQueue(path);
+            //reverseQueue(path);
             return path;
         } else {
             return null;
@@ -166,7 +192,6 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
      * Reverses the order of a deque.
      * @param path The path if the Residual edges
      */
-
     private void reverseQueue (Deque<ResidualEdge<V>> path) {
 
         //assuming the path is not null
@@ -180,9 +205,8 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             path.addLast(stack.lastElement());
             stack.pop();
         }
-
-
     }
+
 
     /**
      * Finds the minimum capacity along the given path and adds the minimum capacity to flow of each edges of the path.
@@ -197,7 +221,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             throw new IllegalArgumentException("The path should not be null! ");
         }
 
-        int mini = path.element().getCapacity(); //  choosing the capacity of a random edge
+        int mini = path.element().getCapacity() ; //  choosing the capacity of a random edge
 
         for (ResidualEdge<V> res_edge : path) {
             if (res_edge.getCapacity() < mini) {
