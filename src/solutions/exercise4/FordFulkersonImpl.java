@@ -2,10 +2,12 @@ package solutions.exercise4;
 
 import com.google.gson.internal.LinkedHashTreeMap;
 import org.sopra.api.exercises.ExerciseSubmission;
+import org.sopra.api.exercises.exercise3.FlowEdge;
 import org.sopra.api.exercises.exercise3.FlowGraph;
 import org.sopra.api.exercises.exercise3.ResidualEdge;
 import org.sopra.api.exercises.exercise3.ResidualGraph;
 import org.sopra.api.exercises.exercise4.FordFulkerson;
+import solutions.exercise3.ResidualGraphImpl;
 
 import java.util.*;
 
@@ -24,7 +26,6 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
     /**
      * Computes the maximum flow in a flow network from start to target.
-     * <p>
      * Given a flow network and a pair of nodes start & target,
      * the algorithm calculates a maximum flow from start to target in given network.
      *
@@ -48,15 +49,29 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             throw new IllegalArgumentException("A path to the same starting node is not possible");
         }
 
+        //inspired by the slides of the frontal event page 7
+
+        for (FlowEdge<V> flowEdge: graph.getEdges()) {
+            flowEdge.setFlow(0);
+        }
+
+        ResidualGraph<V> residualGraph = new ResidualGraphImpl<V>(graph);
+        Deque<ResidualEdge<V>> path = findPath(start, target, residualGraph);
+        int MaxFlow = 0;
+
 
     }
+
+
 
 
     /**
      * Finds the shortest path with remaining capacity using Breadth-First-Search (BFS) on a residual graph from start to end.
      * A path is considered shorter than another path, if the number of edges in that path is lower.
+     * The edges are ordered depending on their occurrence in the path starting with an edge to end as first entry,
+     * and therefore ending with an edges from start as last entry.
+     *
      * If a path with remaining capacity along the edges exists, a double ended queue containing the edges of the path is returned.
-     * The edges are ordered depending on their occurrence in the path starting with an edge to end as first entry, and therefore ending with an edges from start as last entry.
      * If no path with remaining capacity along the edges exists null is returned.
      *
      * @param start Start node of the path
@@ -83,7 +98,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         // Breadth-First-Search (BFS)
 
-        Deque<V> queue = new LinkedList<>();      // Set the queue
+        Deque<V> queue = new ArrayDeque<>();      // Set the queue
         Set<V> seen = new HashSet<>();            // Set of the explored nodes
         Map<V, V> nodesTree = new HashMap<>();    // Set the availability tree
         boolean foundTheTail = false;
@@ -96,7 +111,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             V currentNode = queue.poll(); // node S
 
             for (ResidualEdge<V> res_edge : graph.edgesFrom(currentNode)) {  // the edge leaving the current node( the possible other nodes)
-                if (!seen.contains(res_edge.getEnd())) {
+                if (!seen.contains(res_edge.getEnd()) && res_edge.getCapacity() > 0) {
 
                     seen.add(res_edge.getEnd());                               // adding the node to the seen list
                     queue.add(res_edge.getEnd());                              // adding the node to the queue
@@ -113,30 +128,34 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         Deque<ResidualEdge<V>> path = new ArrayDeque<>();
 
-        if (foundTheTail) {                 // the target node exist in the tree
+        if (foundTheTail && nodesTree.get(end) != null) {                 // the target node exist in the tree
 
             V node = nodesTree.get(end);    // getting the last node before reaching the target
-
+            if (node == null) {
+                throw new IllegalArgumentException("fddf");
+            }
             path.addFirst(graph.getEdge(node, end));
+
 
             while (!start.equals(nodesTree.get(node))) {
                 for (ResidualEdge<V> res_edge : graph.getEdges()) {
                     ResidualEdge<V> wantedEdge = graph.getEdge(nodesTree.get(node), node);
                     if (res_edge.equals(wantedEdge)) {
-                        path.addFirst(wantedEdge);
+                        path.addLast(wantedEdge);
                     }
                 }
                 node = nodesTree.get(node);
 
-                /*   s->a, a->d, d->t; logical
-                /*   a->s, d->a, t->d; applicable
-                *
-                *    d->t, a->d, s->a
-                *    t->d, d->a, a->s; applicable              *
-                * */
+    /*               flowGraph1
+                  1) s->a, a->d, d->t;  first appeared, first added (forwards : from the start node till the end node)
+                  2) t->d, d->a, a->s;  (backwards: from the end node till the end  )
+
+                  3) a->s, d->a, t->d;  other possibilities
+                  4) d->t, a->d, s->a;
+                */
             }
             path.addLast(graph.getEdge(nodesTree.get(node), node));
-            reverseQueue(path);
+           // reverseQueue(path);
             return path;
         } else {
             return null;

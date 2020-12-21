@@ -1,6 +1,5 @@
 package solutions.exercise3;
 
-//import org.sopra.api.exercises.ExerciseSubmission;
 
 import org.sopra.api.exercises.exercise3.FlowEdge;
 
@@ -69,70 +68,5 @@ public class FlowEdgeImpl<V> extends Edge<V> implements FlowEdge<V> {
 
     }
 
-    /*
-
-     */
-/**
- * Gets the start node of this edge.
- *
- * @return the start node of this edge
- *//*
-
-
-
-    @Override
-    public V getStarT() {
-        return this.startNode;
-    }
-
-
-    */
-/**
- * Gets the end node of this edge.
- *
- * @return the end node of this edge
- *//*
-
-
-    @Override
-    public V getEnd() {
-        return this.endNode;
-    }
-
-
-    */
-/**
- * Gets the weight of this edge. Most likely, this weight will be a powerline's capacity.
- *
- * @return the capacity of this edge (edge's weight)
- *//*
-
-
-    @Override
-    public int getCapacity() {
-        return this.capacity;
-    }
-
-
-    */
-/**
- * Sets the weight of this edge.
- *
- * @param capacity of this edge (edge's weight)
- * @throws java.lang.IllegalArgumentException -  if value is negative
- *//*
-
-
-    @Override
-    public void setCapacity(int capacity) {
-        if (capacity < 0) {
-            throw new IllegalArgumentException("The value of the capacity should not be negative ");
-
-        } else {
-            this.capacity = capacity;
-        }
-    }
-
-*/
 
 }
