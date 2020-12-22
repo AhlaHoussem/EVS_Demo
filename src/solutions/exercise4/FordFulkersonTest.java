@@ -1,6 +1,6 @@
 package solutions.exercise4;
 
-//hygujhb
+/
 import org.junit.Test;
 import org.sopra.api.exercises.ExerciseSubmission;
 import org.sopra.api.exercises.exercise3.ResidualGraph;
