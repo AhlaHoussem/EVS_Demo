@@ -67,7 +67,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
               MaxFlow of flowGraphB = 24
               MaxFlow of flowGraphC = 10
 
-           */
+              */
 
         }
 
@@ -96,7 +96,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
      * Gets the smallest remaining capacity in a path
      *
      * @param path The path of residual edges
-     * @return the smallest remaining capacity in a path
+     * @return int the smallest remaining capacity in a path
      */
     private int findMiniCapacity(Deque<ResidualEdge<V>> path) {
         // in this case path will never be null
@@ -149,9 +149,9 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
 
         // Breadth-First-Search (BFS)
 
-        Deque<V> queue = new ArrayDeque<>();      // Set the queue
-        Set<V> seen = new HashSet<>();            // Set of the explored nodes
-        Map<V, V> nodesTree = new HashMap<>();    // Set the availability tree
+        Deque<V> queue = new ArrayDeque<>();      // Sets the queue
+        Set<V> seen = new HashSet<>();            // Sets of the explored nodes
+        Map<V, V> nodesTree = new HashMap<>();    // Sets the availability tree
         boolean foundTheTail = false;
 
 
