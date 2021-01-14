@@ -3,14 +3,20 @@ package solutions.exercise4;
 //
 import org.junit.Test;
 import org.sopra.api.exercises.ExerciseSubmission;
+import org.sopra.api.exercises.exercise3.FlowEdge;
+import org.sopra.api.exercises.exercise3.ResidualEdge;
 import org.sopra.api.exercises.exercise3.ResidualGraph;
 import org.sopra.api.exercises.exercise4.AbstractFordFulkersonTest;
 import solutions.exercise3.ResidualGraphImpl;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
+
+
 
 /**
  * Tests the functionality all the methods of the class FordFulkersonImpl and the validity of its parameter.
@@ -53,6 +59,7 @@ public class FordFulkersonTest extends AbstractFordFulkersonTest implements Exer
         } catch (IllegalArgumentException e) {
             //Expected IllegalArgumentException
         }
+       // assertThrows("",IllegalArgumentException.class, sut.findPath(null, "t", residual_Graph1));
     }
 
     @Override
@@ -105,14 +112,132 @@ public class FordFulkersonTest extends AbstractFordFulkersonTest implements Exer
 
 
     @Override
-    @Test
+    @Test //PASSED
     public void test_augmentPath1() {
+
+        // s-b-a-d-t
+        ResidualGraph<String> residual_Graph1 = new ResidualGraphImpl<String>(flowGraph1);
+        assertNotNull("The graph is null ", residual_Graph1);
+
+        Deque<ResidualEdge<String>> firstpath = new ArrayDeque<>();
+        assertNotNull("The path is null", firstpath);
+        assertEquals(0, firstpath.size());
+
+        firstpath.add(residual_Graph1.getEdge("s", "b"));
+        firstpath.add(residual_Graph1.getEdge("b", "a"));
+        firstpath.add(residual_Graph1.getEdge("a", "d"));
+        firstpath.add(residual_Graph1.getEdge("d", "t"));
+
+        sut.augmentPath(firstpath); //capacity = 3
+
+        assertEquals(residual_Graph1.getEdge("s", "b").getCapacity(), 4);
+        assertNotNull(residual_Graph1.getEdge("s", "b"));
+        assertEquals(residual_Graph1.getEdge("b", "s").getCapacity(), 10);
+        assertNotNull(residual_Graph1.getEdge("b", "s"));
+
+        assertEquals(residual_Graph1.getEdge("s", "a").getCapacity(), 10);
+        assertNotNull(residual_Graph1.getEdge("s", "a"));
+        assertEquals(residual_Graph1.getEdge("a", "s").getCapacity(), 10);
+        assertNotNull(residual_Graph1.getEdge("a", "s"));
+
+        assertEquals(residual_Graph1.getEdge("a", "b").getCapacity(), 6);
+        assertNotNull(residual_Graph1.getEdge("a", "b"));
+        assertEquals(residual_Graph1.getEdge("b", "a").getCapacity(), 0);
+        assertNotNull(residual_Graph1.getEdge("b", "a"));
+
+        assertEquals(residual_Graph1.getEdge("a", "d").getCapacity(), 5);
+        assertNotNull(residual_Graph1.getEdge("a", "d"));
+        assertEquals(residual_Graph1.getEdge("d", "a").getCapacity(), 11);
+        assertNotNull(residual_Graph1.getEdge("d", "a"));
+
+        assertEquals(residual_Graph1.getEdge("d", "c").getCapacity(), 11);
+        assertNotNull(residual_Graph1.getEdge("d", "c"));
+        assertEquals(residual_Graph1.getEdge("c", "d").getCapacity(), 11);
+        assertNotNull(residual_Graph1.getEdge("c", "d"));
+
+        assertEquals(residual_Graph1.getEdge("d", "t").getCapacity(), 3);
+        assertNotNull(residual_Graph1.getEdge("d", "t"));
+        assertEquals(residual_Graph1.getEdge("t", "d").getCapacity(), 9);
+        assertNotNull(residual_Graph1.getEdge("t", "d"));
+
+        assertEquals(residual_Graph1.getEdge("c", "t").getCapacity(), 13);
+        assertNotNull(residual_Graph1.getEdge("c", "t"));
+        assertEquals(residual_Graph1.getEdge("t", "c").getCapacity(), 13);
+        assertNotNull(residual_Graph1.getEdge("t", "c"));
+        
 
     }
 
     @Override
-    @Test
+    @Test //PASSED
     public void test_augmentPath2() {
+
+        // s-a-c-b-e-t
+        ResidualGraph<String> residual_Graph2 = new ResidualGraphImpl<String>(flowGraph2);
+        assertNotNull("The graph is null ", residual_Graph2);
+
+        Deque<ResidualEdge<String>> secondpath = new ArrayDeque<>();
+        assertNotNull("The path is null", secondpath);
+        assertEquals(0, secondpath.size());
+
+        secondpath.add(residual_Graph2.getEdge("s", "a"));
+        secondpath.add(residual_Graph2.getEdge("a", "c"));
+        secondpath.add(residual_Graph2.getEdge("c", "b"));
+        secondpath.add(residual_Graph2.getEdge("b", "e"));
+        secondpath.add(residual_Graph2.getEdge("e", "t"));
+
+        sut.augmentPath(secondpath); //capacity = 5
+
+        assertEquals(residual_Graph2.getEdge("s", "b").getCapacity(), 11);
+        assertNotNull(residual_Graph2.getEdge("s", "b"));
+        assertEquals(residual_Graph2.getEdge("b", "s").getCapacity(), 11);
+        assertNotNull(residual_Graph2.getEdge("b", "s"));
+
+        assertEquals(residual_Graph2.getEdge("s", "a").getCapacity(), 7);
+        assertNotNull(residual_Graph2.getEdge("s", "a"));
+        assertEquals(residual_Graph2.getEdge("a", "s").getCapacity(), 17);
+        assertNotNull(residual_Graph2.getEdge("a", "s"));
+
+        assertEquals(residual_Graph2.getEdge("b", "c").getCapacity(), 10);
+        assertNotNull(residual_Graph2.getEdge("b", "c"));
+        assertEquals(residual_Graph2.getEdge("c", "b").getCapacity(), 0);
+        assertNotNull(residual_Graph2.getEdge("c", "b"));
+
+        assertEquals(residual_Graph2.getEdge("b", "e").getCapacity(), 4);
+        assertNotNull(residual_Graph2.getEdge("b", "e"));
+        assertEquals(residual_Graph2.getEdge("e", "b").getCapacity(), 14);
+        assertNotNull(residual_Graph2.getEdge("e", "b"));
+
+        assertEquals(residual_Graph2.getEdge("a", "c").getCapacity(), 2);
+        assertNotNull(residual_Graph2.getEdge("a", "c"));
+        assertEquals(residual_Graph2.getEdge("c", "a").getCapacity(), 12);
+        assertNotNull(residual_Graph2.getEdge("c", "a"));
+
+        assertEquals(residual_Graph2.getEdge("a", "d").getCapacity(), 0);
+        assertNotNull(residual_Graph2.getEdge("a", "d"));
+        assertEquals(residual_Graph2.getEdge("d", "a").getCapacity(), 0);
+        assertNotNull(residual_Graph2.getEdge("d", "a"));
+
+        assertEquals(residual_Graph2.getEdge("e", "t").getCapacity(), 2);
+        assertNotNull(residual_Graph2.getEdge("e", "t"));
+        assertEquals(residual_Graph2.getEdge("t", "e").getCapacity(), 12);
+        assertNotNull(residual_Graph2.getEdge("t", "e"));
+
+        assertEquals(residual_Graph2.getEdge("e", "d").getCapacity(), 3);
+        assertNotNull(residual_Graph2.getEdge("e", "d"));
+        assertEquals(residual_Graph2.getEdge("d", "e").getCapacity(), 3);
+        assertNotNull(residual_Graph2.getEdge("d", "e"));
+
+        assertEquals(residual_Graph2.getEdge("d", "c").getCapacity(), 4);
+        assertNotNull(residual_Graph2.getEdge("d", "c"));
+        assertEquals(residual_Graph2.getEdge("c", "d").getCapacity(), 4);
+        assertNotNull(residual_Graph2.getEdge("c", "d"));
+
+        assertEquals(residual_Graph2.getEdge("d", "t").getCapacity(), 13);
+        assertNotNull(residual_Graph2.getEdge("d", "t"));
+        assertEquals(residual_Graph2.getEdge("t", "d").getCapacity(), 13);
+        assertNotNull(residual_Graph2.getEdge("t", "d"));
+
 
     }
 
@@ -129,24 +254,95 @@ public class FordFulkersonTest extends AbstractFordFulkersonTest implements Exer
 
 
 
-
-
-
     @Override
     @Test
     public void test_findMaxFlow_flowGraphA() {
+
+        //init Max flow = 17
+        // Summe of the flows leaving the start node is 17 ( by beiden edges)
+        // Summe of the flows entering the end node is 17 ( by beiden edges)
+
+        sut.findMaxFlow(flowGraphA, "s", "t");
+
+        int Max_Flow = 17;
+
+        int input = 0;
+        FlowEdge<String> edge_1 = flowGraphA.getEdge("s", "a");
+        assertNotNull(edge_1);
+        input += edge_1.getFlow();
+        FlowEdge<String> edge_2 = flowGraphA.getEdge("s", "b");
+        assertNotNull(edge_2);
+        input += edge_2.getFlow();
+
+        int output = 0;
+        FlowEdge<String> edge_3 = flowGraphA.getEdge("d", "t");
+        assertNotNull(edge_3);
+        output += edge_3.getFlow();
+        FlowEdge<String> edge_4 = flowGraphA.getEdge("e", "t");
+        assertNotNull(edge_4);
+        output += edge_4.getFlow();
+
+        assertTrue("There is an overloading",input <= Max_Flow);
+        assertEquals("There is a waste of flow during the transfer " ,input,output);
+
+
     }
+
 
 
     @Override
     @Test
     public void test_findMaxFlow_flowGraphB() {
+        sut.findMaxFlow(flowGraphB, "s", "t");
 
+        int Max_Flow = 24;
+
+        int input = 0;
+        FlowEdge<String> edge_1 = flowGraphB.getEdge("s", "a");
+        assertNotNull(edge_1);
+        input += edge_1.getFlow();
+        FlowEdge<String> edge_2 = flowGraphB.getEdge("s", "b");
+        assertNotNull(edge_2);
+        input += edge_2.getFlow();
+
+        int output = 0;
+        FlowEdge<String> edge_3 = flowGraphB.getEdge("d", "t");
+        assertNotNull(edge_3);
+        output += edge_3.getFlow();
+        FlowEdge<String> edge_4 = flowGraphB.getEdge("e", "t");
+        assertNotNull(edge_4);
+        output += edge_4.getFlow();
+
+        assertTrue("There is an overloading",input <= Max_Flow);
+        assertEquals("There is a waste of flow during the transfer " ,input,output);
     }
 
     @Override
     @Test
     public void test_findMaxFlow_flowGraphC() {
+
+        sut.findMaxFlow(flowGraphC, "s", "t");
+
+        int Max_Flow = 10;
+
+        int input = 0;
+        FlowEdge<String> edge_1 = flowGraphC.getEdge("s", "a");
+        assertNotNull(edge_1);
+        input += edge_1.getFlow();
+        FlowEdge<String> edge_2 = flowGraphC.getEdge("s", "b");
+        assertNotNull(edge_2);
+        input += edge_2.getFlow();
+
+        int output = 0;
+        FlowEdge<String> edge_3 = flowGraphC.getEdge("d", "t");
+        assertNotNull(edge_3);
+        output += edge_3.getFlow();
+        FlowEdge<String> edge_4 = flowGraphC.getEdge("e", "t");
+        assertNotNull(edge_4);
+        output += edge_4.getFlow();
+
+        assertTrue("There is an overloading",input <= Max_Flow);
+        assertEquals("There is a waste of flow during the transfer " ,input,output);
 
     }
 
@@ -194,7 +390,6 @@ public class FordFulkersonTest extends AbstractFordFulkersonTest implements Exer
         }
 
     }
-
 
     /**
      * Identifies the group

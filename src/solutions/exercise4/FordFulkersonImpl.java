@@ -1,6 +1,5 @@
 package solutions.exercise4;
 
-import com.google.gson.internal.LinkedHashTreeMap;
 import org.sopra.api.exercises.ExerciseSubmission;
 import org.sopra.api.exercises.exercise3.FlowEdge;
 import org.sopra.api.exercises.exercise3.FlowGraph;
@@ -16,7 +15,7 @@ import java.util.*;
  * Represents a Ford-Fulkerson algorithm for computing maximum flows in a flow network.
  *
  * @author G10T01
- * @version 4.1.0
+ * @version 4.1.7
  * @since 17-12-2020
  */
 
@@ -55,7 +54,7 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
             flowEdge.setFlow(0);
         }
 
-        ResidualGraph<V> residualGraph = new ResidualGraphImpl<V>(graph);
+        ResidualGraph<V> residualGraph = new ResidualGraphImpl<>(graph);
         Deque<ResidualEdge<V>> path = findPath(start, target, residualGraph);
         int MaxFlow = 0;
         while (path != null) {
@@ -67,23 +66,27 @@ public class FordFulkersonImpl<V> implements FordFulkerson<V>, ExerciseSubmissio
               MaxFlow of flowGraphA = 17
               MaxFlow of flowGraphB = 24
               MaxFlow of flowGraphC = 10
-              */
+
+           */
 
         }
 
         // actualising the flowGraph by setting the remaining capacity
-        for ( ResidualEdge<V> res_edge : residualGraph.getEdges()){
+        // assuming that the graph is symmetric
 
-            FlowEdge<V> forward_edge = graph.getEdge(res_edge.getStart(), res_edge.getEnd());
-            FlowEdge<V> backward_edge = graph.getEdge(res_edge.getEnd(), res_edge.getStart());
+        for (ResidualEdge<V> res_edge : residualGraph.getEdges()) {
 
- /*           //TODO setting the flows
-            if (residualGraph.getEdges().contains(forward_edge)) {
-                int init_capacity = forward_edge.getCapacity();
-                if (backward_edge != null) {
+            FlowEdge<V> backFlow_edge = graph.getEdge(res_edge.getEnd(), res_edge.getStart());
 
-                }
-            }*/
+            //setting the flow
+
+            int init_capacity = (res_edge.getCapacity() + res_edge.getReverse().getCapacity())/2;
+            if (res_edge.getCapacity() - init_capacity >= 0) {
+                backFlow_edge.setFlow(res_edge.getCapacity() - init_capacity);
+            } else {
+                backFlow_edge.setFlow(0);
+            }
+
         }
 
     }
